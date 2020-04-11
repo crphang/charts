@@ -1,0 +1,10 @@
+cluster: dev
+env: local
+replicaCount: 1
+talariaimage: kelindar/talaria:latest 
+fullnameOverride: "talaria"
+configPath: "file:///config/conf.yaml"
+
+minio:
+  accessKey: ACCESSKEY
+  secretKey: SECRETKEY
