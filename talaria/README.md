@@ -4,8 +4,8 @@ This helm chart provides easy deployment of [Talaria](https://github.com/kelinda
 
 # Pre-requisites
 
-[Install Minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/) for this to work locally.
-[Install Helm](https://helm.sh/docs/intro/install/) The following commands would work for Helm 3.0
+- [Install Minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/) for this to work locally.
+- [Install Helm](https://helm.sh/docs/intro/install/) The following commands would work for Helm 3.0
 
 # Installation
 
