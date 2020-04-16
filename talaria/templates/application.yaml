@@ -12,7 +12,7 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: {{ template "talaria.servicename" . }}
+      app: {{ template "talaria.fullname" . }}
       env: {{ .Values.cluster }}
   template:
     metadata:
@@ -21,63 +21,59 @@ spec:
         env: {{ .Values.cluster }}
     spec:
       terminationGracePeriodSeconds: 30
-        affinity:
-          podAntiAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              - labelSelector:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
                 matchExpressions:
                   - key: app
                     operator: In
                     values:
-                      - {{ template "stalker-processor.fullname" . }}
-                topologyKey: kubernetes.io/hostname
-        containers:
-          - image: {{ .Values.talariaImage }}
-            name: {{ template "talaria.servicename" . }}
-            ports:
-              - containerPort: 8042
-                name: thrift
-                protocol: TCP
-              - containerPort: 7946
-                protocol: TCP
-              - containerPort: 7946
-                protocol: UDP
-            imagePullPolicy: IfNotPresent
-            env:
-              - name: TALARIA_CONF_URI
-                value: {{ .Values.configPath }}
-              - name: GOMAXPROCS
-                value: "128"
-              - name: AWS_ACCESS_KEY # Use https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-environment-variables 
-                value: ACCESSKEY
-              - name: AWS_SECRET_KEY
-                value: SECRETKEY
-            securityContext:
-              privileged: true 
-            volumeMounts:
-              - mountPath: /config
-                name: 'config-dir'
-              - mountPath: /data
-                name: data
-            resources:
-              requests:
-                memory: "1000Mi"
-                cpu: "1000m"
-        securityContext: {}
-        volumes:
-        - name: 'config-dir'
-          hostPath:
-            path: /hosthome/crphang/charts/talaria/config
-        volumeClaimTemplates:
-          - metadata:
-            name: data
-            spec:
-              accessModes:
-                - ReadWriteOnce
-              storageClassName: standard
-              resources:
-                requests:
-                  storage: 1000Gi
-              
-               
-              
+                      - {{ template "talaria.fullname" . }}
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - image: {{ .Values.talariaImage }}
+          name: {{ template "talaria.servicename" . }}
+          ports:
+            - containerPort: 8042
+              name: thrift
+              protocol: TCP
+            - containerPort: 7946
+              protocol: TCP
+            - containerPort: 7946
+              protocol: UDP
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TALARIA_CONF_URI
+              value: {{ .Values.configPath }}
+            - name: GOMAXPROCS
+              value: "128"
+            - name: AWS_ACCESS_KEY # Use https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-environment-variables 
+              value: ACCESSKEY
+            - name: AWS_SECRET_KEY
+              value: SECRETKEY
+          securityContext:
+            privileged: true 
+          volumeMounts:
+            - mountPath: /config
+              name: 'config-dir'
+            - mountPath: /data
+              name: data
+          resources:
+            requests:
+              memory: "1000Mi"
+              cpu: "100m"
+      securityContext: {}
+      volumes:
+      - name: 'config-dir'
+        hostPath:
+          path: /config
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

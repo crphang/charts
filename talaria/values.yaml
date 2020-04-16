@@ -1,10 +1,13 @@
 cluster: dev
 env: local
 replicaCount: 1
-talariaimage: kelindar/talaria:latest 
+talariaImage: kelindar/talaria:edge 
 fullnameOverride: "talaria"
 configPath: "file:///config/conf.yaml"
 
 minio:
   accessKey: ACCESSKEY
   secretKey: SECRETKEY
+  defaultBucket:
+    enabled: true
+    name: eventlog

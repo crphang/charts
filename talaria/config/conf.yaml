@@ -1,1 +1,30 @@
-username: talaria
+mode: dev
+env: dev
+appName: talaria
+domain: "dev-talaria-headless-svc.default.svc.cluster.local"
+readers:
+  presto:
+    schema: x
+    port: 8042
+writers:
+  grpc:
+    port: 8080
+storage:
+  dir: "/data"
+  compact:
+    s3:
+      region: "ap-southeast-1"
+      bucket: "eventlog"
+      concurrency: 10
+      endpoint: "http://talaria-minio.default:9000"
+    interval: 10
+tables:
+  timeseries:
+    name: eventlog
+    ttl: 3600
+    hashBy: event
+    schema: "file:///config/schema.yaml"
+  log:
+    name: logs
+  nodes:
+    name: nodes
